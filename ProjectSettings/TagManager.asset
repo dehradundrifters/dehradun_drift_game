@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Hand
   - Cube
+  - knot
   layers:
   - Default
   - TransparentFX

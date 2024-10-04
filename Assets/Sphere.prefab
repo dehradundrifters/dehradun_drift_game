@@ -15,9 +15,12 @@ GameObject:
   - component: {fileID: 459953760225674080}
   - component: {fileID: -7580450176990937129}
   - component: {fileID: 3812252132988286109}
+  - component: {fileID: 8547542018792083542}
+  - component: {fileID: 1674993655444350798}
+  - component: {fileID: 5986454640192012766}
   m_Layer: 0
   m_Name: Sphere
-  m_TagString: Untagged
+  m_TagString: knot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -32,7 +35,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.8235463, y: 0.7331479, z: 4.855472}
-  m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
+  m_LocalScale: {x: 0.099999994, y: 0.099999994, z: 0.099999994}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -148,7 +151,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_InteractionManager: {fileID: 0}
-  m_Colliders: []
+  m_Colliders:
+  - {fileID: 6329538688554984239}
   m_InteractionLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -299,3 +303,80 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5c370e7f5cab7f4fb8ec9bf26cdf54b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  knotIndex: 0
+  splineContainer: {fileID: 0}
+  spline:
+    m_EditModeType: 1
+    m_Knots: []
+    m_MetaData: []
+    m_Closed: 0
+    m_IntData:
+      m_Data: []
+    m_FloatData:
+      m_Data: []
+    m_Float4Data:
+      m_Data: []
+    m_ObjectData:
+      m_Data: []
+  splineIndex: 0
+  cube: {fileID: 0}
+  isCursorOverlapping: 0
+  leftgripAction:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Leftgrip
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: 4bb7117c-2955-4327-9e2d-493f6fd94df0
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: -8148491892877670638, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+--- !u!114 &8547542018792083542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2065464188548614073}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b0196fba48f6514ba86c560504f4752, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1674993655444350798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2065464188548614073}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43d8f71e3dc65c849bfb2cd84eb10069, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deleteKnotToggle: {fileID: 0}
+  joinKnotToggle: {fileID: 0}
+--- !u!135 &5986454640192012766
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2065464188548614073}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.49999997
+  m_Center: {x: 0, y: 0, z: 0}
