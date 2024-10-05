@@ -1930,7 +1930,7 @@ MonoBehaviour:
     Probability: 0
   m_Method: 1
   m_Space: 0
-  m_Spacing: {x: 0.89, y: 0.89}
+  m_Spacing: {x: 0.27, y: 0.27}
   m_Up: 1
   m_Forward: 2
   m_PositionOffset:
@@ -3916,18 +3916,6 @@ MonoBehaviour:
       m_SingletonActionBindings: []
       m_Flags: 0
     m_Reference: {fileID: 83097790271614945, guid: c348712bda248c246b8c49b3db54643f, type: 3}
-  rightAButtonAction:
-    m_UseReference: 1
-    m_Action:
-      m_Name: Right A Button
-      m_Type: 0
-      m_ExpectedControlType: 
-      m_Id: eb073ed6-a087-4011-9ca8-d2512c9d5e2d
-      m_Processors: 
-      m_Interactions: 
-      m_SingletonActionBindings: []
-      m_Flags: 0
-    m_Reference: {fileID: -7621925406209348655, guid: c348712bda248c246b8c49b3db54643f, type: 3}
 --- !u!114 &1456846086
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3935,7 +3923,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1456846078}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 09cf28f3edba4e54c8eda93b2efe0efa, type: 3}
   m_Name: 
@@ -3953,6 +3941,18 @@ MonoBehaviour:
       m_SingletonActionBindings: []
       m_Flags: 0
     m_Reference: {fileID: -5982496924579745919, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  rightAction:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Right
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: ac21ae26-8caf-4caa-aed7-0a8a43255acd
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: 3279264004350380116, guid: c348712bda248c246b8c49b3db54643f, type: 3}
 --- !u!1 &1476361598
 GameObject:
   m_ObjectHideFlags: 0

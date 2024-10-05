@@ -7,6 +7,7 @@ public class cubeoff : MonoBehaviour
 {
     public GameObject cube;
     public InputActionProperty rightTriggerAction;
+    public InputActionProperty rightAction;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,5 +21,10 @@ public class cubeoff : MonoBehaviour
         {
             cube.SetActive(false);
         }
+        if (rightAction.action.WasPressedThisFrame())
+        {
+            Debug.Log("A button was pressed ");
+        }
+
     }
 }

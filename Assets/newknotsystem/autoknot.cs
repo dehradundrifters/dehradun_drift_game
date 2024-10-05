@@ -17,7 +17,7 @@ public class SplineDrawer : MonoBehaviour
     private GameObject[] instantiatedObjects; // Track instantiated objects for the current spline
     private bool canCreateKnots = true; // To track if the toggle is on
     public InputActionProperty rightTriggerAction;
-    public InputActionProperty rightAButtonAction;
+    
     void Start()
     {
         // Initialize the object tracking array
@@ -72,7 +72,7 @@ public class SplineDrawer : MonoBehaviour
         }
 
         // Switch to a new spline when N is pressed
-        if ( rightAButtonAction.action.WasPressedThisFrame())
+        if (Input.GetKeyDown(KeyCode.N)) 
         {
             SwitchToNewSpline();
         }
