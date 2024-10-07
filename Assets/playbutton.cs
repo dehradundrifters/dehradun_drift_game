@@ -8,6 +8,7 @@ public class SplineAnimateController : MonoBehaviour
     public InputActionProperty xButtonAction; // Input Action for the X button on the left controller
     public GameObject xrorigincamera;
     public GameObject playercamera;
+    
     private void Start()
     {
         xrorigincamera.SetActive(true) ;
