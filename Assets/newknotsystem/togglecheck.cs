@@ -6,6 +6,7 @@ public class ToggleManager : MonoBehaviour
     public Toggle toggle1; // First toggle
     public Toggle toggle2; // Second toggle
     public Toggle toggle3; // Third toggle
+    public Toggle toggle4; // Third toggle
 
     void Start()
     {
@@ -13,6 +14,7 @@ public class ToggleManager : MonoBehaviour
         toggle1.onValueChanged.AddListener(delegate { OnToggleChanged(toggle1); });
         toggle2.onValueChanged.AddListener(delegate { OnToggleChanged(toggle2); });
         toggle3.onValueChanged.AddListener(delegate { OnToggleChanged(toggle3); });
+        toggle4.onValueChanged.AddListener(delegate { OnToggleChanged(toggle4); });
     }
 
     // This function will be called when any toggle changes its state
@@ -24,6 +26,7 @@ public class ToggleManager : MonoBehaviour
             if (changedToggle != toggle1) toggle1.isOn = false;
             if (changedToggle != toggle2) toggle2.isOn = false;
             if (changedToggle != toggle3) toggle3.isOn = false;
+            if (changedToggle != toggle4) toggle4.isOn = false;
         }
     }
 
@@ -33,5 +36,6 @@ public class ToggleManager : MonoBehaviour
         toggle1.isOn = false;
         toggle2.isOn = false;
         toggle3.isOn = false;
+        toggle4.isOn = false;
     }
 }

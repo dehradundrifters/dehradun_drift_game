@@ -74,8 +74,9 @@ public class PrometeoEditor : Editor{
   private SerializedProperty turnRightButton;
   private SerializedProperty turnLeftButton;
   private SerializedProperty handbrakeButton;
-
-  private void OnEnable(){
+  private SerializedProperty rightHandTrigger; // Add this
+  private SerializedProperty leftHandTrigger;  // Add this
+    private void OnEnable(){
     prometeo = (PrometeoCarController)target;
     SO = new SerializedObject(target);
 
@@ -88,7 +89,8 @@ public class PrometeoEditor : Editor{
     decelerationMultiplier = SO.FindProperty("decelerationMultiplier");
     handbrakeDriftMultiplier = SO.FindProperty("handbrakeDriftMultiplier");
     bodyMassCenter = SO.FindProperty("bodyMassCenter");
-
+    rightHandTrigger = SO.FindProperty("rightHandTrigger");
+    leftHandTrigger = SO.FindProperty("leftHandTrigger");
     frontLeftMesh = SO.FindProperty("frontLeftMesh");
     frontLeftCollider = SO.FindProperty("frontLeftCollider");
     frontRightMesh = SO.FindProperty("frontRightMesh");
@@ -164,14 +166,21 @@ public class PrometeoEditor : Editor{
 
     EditorGUILayout.PropertyField(rearRightMesh, new GUIContent("Rear Right Mesh: "));
     EditorGUILayout.PropertyField(rearRightCollider, new GUIContent("Rear Right Collider: "));
-
-    //
-    //
-    //EFFECTS
-    //
-    //
-
     GUILayout.Space(25);
+    GUILayout.Label("INPUT ACTION REFERENCES", EditorStyles.boldLabel);
+    GUILayout.Space(10);
+
+    EditorGUILayout.PropertyField(rightHandTrigger, new GUIContent("Right Hand Trigger (Throttle):"));
+    EditorGUILayout.PropertyField(leftHandTrigger, new GUIContent("Left Hand Trigger (Reverse):"));
+
+
+        //
+        //
+        //EFFECTS
+        //
+        //
+
+        GUILayout.Space(25);
     GUILayout.Label("EFFECTS", EditorStyles.boldLabel);
     GUILayout.Space(10);
 

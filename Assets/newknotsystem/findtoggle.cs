@@ -135,8 +135,8 @@ public class ToggleReference : MonoBehaviour
         // Example: Log the toggle state for testing
         if (deleteKnotToggle != null && joinKnotToggle != null)
         {
-            Debug.Log("Delete Knot Toggle: " + deleteKnotToggle.isOn);
-            Debug.Log("Join Knot Toggle: " + joinKnotToggle.isOn);
+            //Debug.Log("Delete Knot Toggle: " + deleteKnotToggle.isOn);
+            //Debug.Log("Join Knot Toggle: " + joinKnotToggle.isOn);
         }
     }
 

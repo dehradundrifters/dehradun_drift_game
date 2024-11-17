@@ -12,6 +12,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.XR.Content.Interaction;
 
@@ -68,10 +69,11 @@ public class PrometeoCarController : MonoBehaviour
       [Space(10)]
       public GameObject rearRightMesh;
       public WheelCollider rearRightCollider;
+    public InputActionReference rightHandTrigger; // For throttle
+    public InputActionReference leftHandTrigger;  // For reverse
+                                                  //PARTICLE SYSTEMS
 
-    //PARTICLE SYSTEMS
-
-      [Space(20)]
+    [Space(20)]
       //[Header("EFFECTS")]
       [Space(10)]
       //The following variable lets you to set up particle systems in your car
@@ -278,27 +280,50 @@ public class PrometeoCarController : MonoBehaviour
     }
 
     // Update is called once per frame
+    private void OnEnable()
+    {
+        // Enable the actions from the references
+        rightHandTrigger?.action?.Enable();
+        leftHandTrigger?.action?.Enable();
+    }
+
+    private void OnDisable()
+    {
+        // Disable the actions from the references
+        rightHandTrigger?.action?.Disable();
+        leftHandTrigger?.action?.Disable();
+    }
     void Update()
     {
-        //float knobValue = steeringKnob.value;
+        // Ensure input actions are valid before using them
+        if (rightHandTrigger != null && rightHandTrigger.action != null)
+        {
+            float rightTriggerValue = rightHandTrigger.action.ReadValue<float>(); // Get the value of the right hand trigger
+            if (rightTriggerValue > 0.1f) // Adjust threshold as needed
+            {
+                CancelInvoke("DecelerateCar");
+                deceleratingCar = false;
+                GoForward();
+            }
+        }
+
+        if (leftHandTrigger != null && leftHandTrigger.action != null)
+        {
+            float leftTriggerValue = leftHandTrigger.action.ReadValue<float>(); // Get the value of the left hand trigger
+            if (leftTriggerValue > 0.1f) // Adjust threshold as needed
+            {
+                CancelInvoke("DecelerateCar");
+                deceleratingCar = false;
+                GoReverse();
+            }
+        }
 
         // CAR DATA - Speed and other variables
         carSpeed = (2 * Mathf.PI * frontLeftCollider.radius * frontLeftCollider.rpm * 60) / 1000;
         localVelocityX = transform.InverseTransformDirection(carRigidbody.velocity).x;
         localVelocityZ = transform.InverseTransformDirection(carRigidbody.velocity).z;
 
-        if (Input.GetKey(KeyCode.W))
-        {
-            CancelInvoke("DecelerateCar");
-            deceleratingCar = false;
-            GoForward();
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            CancelInvoke("DecelerateCar");
-            deceleratingCar = false;
-            GoReverse();
-        }
+        // Steering logic using XRKnob
         if (steeringKnob != null)
         {
             float knobValue = steeringKnob.value;
@@ -309,28 +334,30 @@ public class PrometeoCarController : MonoBehaviour
             // Apply the target angle to the front wheel colliders
             frontLeftCollider.steerAngle = Mathf.Lerp(frontLeftCollider.steerAngle, targetAngle, steeringSpeed * Time.deltaTime);
             frontRightCollider.steerAngle = Mathf.Lerp(frontRightCollider.steerAngle, targetAngle, steeringSpeed * Time.deltaTime);
+
+            // Reset steering angle if the knob is near the center
             if (knobValue > 0.420f && knobValue < 0.580f)
             {
                 ResetSteeringAngle();
             }
-            //ResetSteeringAngle();
-        }
-        // Use knob value for turning
-        /*if (knobValue < knobCenter)
-        {
-            TurnLeft();
-        }
-        else if (knobValue > knobCenter)
-        {
-            TurnRight();
         }
 
-        if ((knobValue == knobCenter) && steeringAxis != 0f)
+        // Handling other car controls like deceleration and handbrake
+        if ((leftHandTrigger == null || leftHandTrigger.action.ReadValue<float>() <= 0.1f) &&
+            (rightHandTrigger == null || rightHandTrigger.action.ReadValue<float>() <= 0.1f))
         {
-            ResetSteeringAngle();
-        }*/
+            ThrottleOff();
+        }
 
-        // Handling other car controls
+        if ((leftHandTrigger == null || leftHandTrigger.action.ReadValue<float>() <= 0.1f) &&
+            (rightHandTrigger == null || rightHandTrigger.action.ReadValue<float>() <= 0.1f) &&
+            !deceleratingCar)
+        {
+            InvokeRepeating("DecelerateCar", 0f, 0.1f);
+            deceleratingCar = true;
+        }
+
+        // Handbrake logic
         if (Input.GetKey(KeyCode.Space))
         {
             CancelInvoke("DecelerateCar");
@@ -341,19 +368,11 @@ public class PrometeoCarController : MonoBehaviour
         {
             RecoverTraction();
         }
-        if (!Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.W))
-        {
-            ThrottleOff();
-        }
-        if ((!Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.W)) && !Input.GetKey(KeyCode.Space) && !deceleratingCar)
-        {
-            InvokeRepeating("DecelerateCar", 0f, 0.1f);
-            deceleratingCar = true;
-        }
 
+        // Animate wheel meshes
         AnimateWheelMeshes();
-
     }
+
 
     // This method converts the car speed data from float to string, and then set the text of the UI carSpeedText with this value.
     public void CarSpeedUI(){

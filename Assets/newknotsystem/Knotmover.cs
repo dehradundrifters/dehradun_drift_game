@@ -12,14 +12,11 @@ public class KnotMover : MonoBehaviour
     public GameObject cube;
     public bool isCursorOverlapping = false;
     private ToggleReference toggleReference;
-    public InputActionProperty leftgripAction;
-    public void Initialize(int knotIndex, SplineContainer container, int splineIndex)
-    {
-        this.knotIndex = knotIndex;
-        this.splineContainer = container;
-        this.splineIndex = splineIndex;
-        spline = container.Splines[splineIndex];
+    public bool beforejoinbool = true;
+    public InputActionReference leftTriggerAction; // Reference for the left trigger button
 
+    private void Start()
+    {
         cube = GameObject.FindWithTag("Cube");
         if (cube == null)
         {
@@ -32,6 +29,32 @@ public class KnotMover : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        leftTriggerAction.action.Enable();
+    }
+
+    private void OnDisable()
+    {
+        leftTriggerAction.action.Disable();
+    }
+
+    public void Initialize(int knotIndex, SplineContainer container, int splineIndex)
+    {
+        this.knotIndex = knotIndex;
+        this.splineContainer = container;
+        this.splineIndex = splineIndex;
+        spline = container.Splines[splineIndex];
+
+        // Get the knot's current position in world space
+        if (knotIndex >= 0 && knotIndex < spline.Count)
+        {
+            Vector3 knotWorldPosition = splineContainer.transform.TransformPoint(spline[knotIndex].Position);
+            transform.position = knotWorldPosition;
+        }
+        beforejoinbool = true;
+    }
+
     void Update()
     {
         if (cube == null) return;
@@ -41,63 +64,67 @@ public class KnotMover : MonoBehaviour
 
         // Get the spline corresponding to our splineIndex
         Spline currentSpline = splineContainer.Splines[splineIndex];
-
-        // Check if this is the last knot of the active spline
-        if (currentSpline == activeSpline && knotIndex == activeSpline.Count - 1)
+        if (beforejoinbool)
         {
-            // Move the last knot of the active spline to the cube's position
-            Vector3 cubeLocalPosition = splineContainer.transform.InverseTransformPoint(cube.transform.position);
-            transform.position = cube.transform.position;
-            BezierKnot newKnot = new BezierKnot(cubeLocalPosition);
-            activeSpline[knotIndex] = newKnot;
-            activeSpline.SetTangentMode(knotIndex, TangentMode.AutoSmooth);
+            if (splineIndex == splineContainer.Splines.Count - 1 && knotIndex == spline.Count - 1)
+            {
+                Vector3 cubeLocalPosition = splineContainer.transform.InverseTransformPoint(cube.transform.position);
+                transform.position = cube.transform.position;
+                BezierKnot newKnot = new BezierKnot(cubeLocalPosition);
+                spline[knotIndex] = newKnot;
+                spline.SetTangentMode(knotIndex, TangentMode.AutoSmooth);
+            }
+            else
+            {
+                Vector3 localPosition = splineContainer.transform.InverseTransformPoint(transform.position);
+                BezierKnot currentKnot = currentSpline[knotIndex];
+                BezierKnot newKnot = new BezierKnot(localPosition, currentKnot.TangentIn, currentKnot.TangentOut);
+                currentSpline[knotIndex] = newKnot;
+                currentSpline.SetTangentMode(knotIndex, TangentMode.AutoSmooth);
+            }
         }
-        else
-        {
-            // For all other knots
-            Vector3 localPosition = splineContainer.transform.InverseTransformPoint(transform.position);
-            BezierKnot currentKnot = currentSpline[knotIndex];
-            BezierKnot newKnot = new BezierKnot(localPosition, currentKnot.TangentIn, currentKnot.TangentOut);
-            currentSpline[knotIndex] = newKnot;
-            currentSpline.SetTangentMode(knotIndex, TangentMode.AutoSmooth);
-        }
 
-        // Check for cursor overlap and T key press
-        if (toggleReference.deleteKnotToggle.isOn && isCursorOverlapping && knotIndex == currentSpline.Count - 1)
+        // Check for cursor overlap and deletion toggle
+        if (toggleReference.deleteKnotToggle.isOn && isCursorOverlapping)
         {
-            Debug.Log("hovering on last knot");
-            if (leftgripAction.action.WasPressedThisFrame())
+            if (leftTriggerAction.action.triggered) // Check if the left trigger action is triggered
             {
                 DeleteKnot();
             }
-            Debug.Log($"This is the last knot of spline {splineIndex}.");
+            Debug.Log($"Knot at index {knotIndex} of spline {splineIndex} can be deleted.");
         }
     }
 
-    void DeleteKnot()
+    // Method to delete the current knot
+    public void DeleteKnot()
     {
-        // Check if the current spline and knot index are valid
         Spline currentSpline = splineContainer.Splines[splineIndex];
+
+        // Validate knot index and spline
         if (currentSpline != null && knotIndex >= 0 && knotIndex < currentSpline.Count)
         {
-            // Remove the last knot from the specific spline
             currentSpline.RemoveAt(knotIndex);
             Debug.Log($"Knot at index {knotIndex} of spline {splineIndex} removed.");
 
-            // Set the tangent mode for the new last knot if needed
             if (currentSpline.Count > 0)
             {
                 int newLastKnotIndex = currentSpline.Count - 1;
                 currentSpline.SetTangentMode(newLastKnotIndex, TangentMode.AutoSmooth);
             }
 
-            // Destroy the GameObject representing this knot
+            SplineInfo splineInfo = GetComponentInParent<SplineInfo>();
+            if (splineInfo != null)
+            {
+                splineInfo.ReinitializeKnots(this.gameObject);
+                Debug.Log("Called ReinitializeKnots on the parent SplineInfo, ignoring this GameObject.");
+            }
+
             Destroy(gameObject);
             Debug.Log($"GameObject of the knot at index {knotIndex} destroyed.");
         }
         else
         {
-            Debug.LogWarning("Invalid knot index or spline. Unable to delete knot.");
+           // Debug.LogWarning("Invalid knot index or spline. Unable to delete knot.");
         }
     }
 
@@ -106,7 +133,7 @@ public class KnotMover : MonoBehaviour
         if (other.CompareTag("Hand"))
         {
             isCursorOverlapping = true;
-            Debug.Log("Cursor overlap");
+            //Debug.Log("Cursor overlap");
         }
     }
 

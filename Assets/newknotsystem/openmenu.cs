@@ -17,6 +17,7 @@ public class openmenu : MonoBehaviour
         // Check if the button was pressed this frame
         if (leftTriggerAction.action.WasPressedThisFrame())
         {
+            //Debug.Log("open the menu");
             // Toggle the state of the hand menu
             isMenuOpen = !isMenuOpen;
 
