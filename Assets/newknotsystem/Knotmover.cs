@@ -11,9 +11,11 @@ public class KnotMover : MonoBehaviour
     public int splineIndex;
     public GameObject cube;
     public bool isCursorOverlapping = false;
-    private ToggleReference toggleReference;
+    
     public bool beforejoinbool = true;
-    public InputActionReference leftTriggerAction; // Reference for the left trigger button
+    
+    
+
 
     private void Start()
     {
@@ -22,22 +24,10 @@ public class KnotMover : MonoBehaviour
         {
             Debug.LogError("Cube not found in the scene! Please make sure the cube is present and tagged correctly.");
         }
-        toggleReference = gameObject.GetComponent<ToggleReference>();
-        if (toggleReference == null)
-        {
-            Debug.LogError("ToggleReference script not found! Make sure it is attached and assigned correctly.");
-        }
+       
     }
 
-    private void OnEnable()
-    {
-        leftTriggerAction.action.Enable();
-    }
-
-    private void OnDisable()
-    {
-        leftTriggerAction.action.Disable();
-    }
+    
 
     public void Initialize(int knotIndex, SplineContainer container, int splineIndex)
     {
@@ -85,13 +75,10 @@ public class KnotMover : MonoBehaviour
         }
 
         // Check for cursor overlap and deletion toggle
-        if (toggleReference.deleteKnotToggle.isOn && isCursorOverlapping)
+        if (isCursorOverlapping && InputManager.Instance.IsDeleteEnabled && InputManager.Instance.IsTriggerPressed)
         {
-            if (leftTriggerAction.action.triggered) // Check if the left trigger action is triggered
-            {
-                DeleteKnot();
-            }
-            Debug.Log($"Knot at index {knotIndex} of spline {splineIndex} can be deleted.");
+            Debug.Log($"Deleting GameObject: {gameObject.name}");
+            DeleteKnot(); // Delete this GameObject
         }
     }
 
@@ -130,18 +117,21 @@ public class KnotMover : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        // Check if the hand enters the trigger area
         if (other.CompareTag("Hand"))
         {
             isCursorOverlapping = true;
-            //Debug.Log("Cursor overlap");
+            Debug.Log($"Cursor overlapping {gameObject.name}");
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
+        // Check if the hand exits the trigger area
         if (other.CompareTag("Hand"))
         {
             isCursorOverlapping = false;
+            Debug.Log($"Cursor left {gameObject.name}");
         }
     }
 }

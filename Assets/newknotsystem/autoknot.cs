@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Splines;
+using UnityEngine.UI;
 
 public class SplineDrawer : MonoBehaviour
 {
@@ -15,8 +16,9 @@ public class SplineDrawer : MonoBehaviour
     private int currentKnotIndex = -1; // Track the index of the current knot
     private int currentSplineIndex = 0; // Track the index of the current spline within the container
     private GameObject[] instantiatedObjects; // Track instantiated objects for the current spline
-    private bool canCreateKnots = true; // To track if knot creation is enabled (controlled by UI Toggle)
-
+    public bool canCreateKnots = true; // To track if knot creation is enabled (controlled by UI Toggle)
+    public bool invalid = false;
+    //public Toggle knotcreate;
     void Start()
     {
         // Initialize the object tracking array
@@ -62,7 +64,7 @@ public class SplineDrawer : MonoBehaviour
     private void OnRightTriggerPressed(InputAction.CallbackContext context)
     {
         // Check if knot creation is enabled
-        if (canCreateKnots)
+        if (!invalid && canCreateKnots)
         {
             knotIsFollowingCube = false;
             AddNewKnotAtPosition(transform.position);
@@ -72,12 +74,17 @@ public class SplineDrawer : MonoBehaviour
 
     private void OnAButtonPressed(InputAction.CallbackContext context)
     {
+        if (!invalid)
+        {
+            SwitchToNewSpline();
+        }
         // Switch to a new spline on A button press
-        SwitchToNewSpline();
+        
     }
 
     void Update()
     {
+        //canCreateKnots = knotcreate.isOn;
         // Move the current knot with the cube while the knot is set to follow the cube
         if (knotIsFollowingCube && currentKnotIndex >= 0)
         {
@@ -147,6 +154,7 @@ public class SplineDrawer : MonoBehaviour
     public void SetKnotCreationState(bool state)
     {
         canCreateKnots = state;
+        Debug.Log(" toggle state" + canCreateKnots);
         splinesetagain();
         if (!state)
         {

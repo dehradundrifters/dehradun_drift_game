@@ -7,9 +7,8 @@ public class SplineLinker : MonoBehaviour
     private GameObject cube;
     private SplineDrawer splineDrawer;
     private SplineInfo splineinfo;
-    void Start()
+    private void OnEnable()
     {
-        // Get the KnotMover component attached to the same GameObject
         knotMover = GetComponent<KnotMover>();
         // Assuming this script is attached to a child GameObject of the parent with SplineInfo
         splineinfo = transform.parent.GetComponent<SplineInfo>();
@@ -33,7 +32,9 @@ public class SplineLinker : MonoBehaviour
         {
             Debug.LogError("Cube GameObject is not assigned in KnotMover or not found in the scene.");
         }
+        
     }
+
 
 
     private void OnTriggerEnter(Collider other)
@@ -41,50 +42,48 @@ public class SplineLinker : MonoBehaviour
         // Check if the other object has the "knot" tag
         if (other.CompareTag("knot"))
         {
-           //Debug.Log("Checking if knots can be linked");
+            //Debug.Log("Checking if knots can be linked");
 
-            // Get the KnotMover component from the other sphere
+           
+          
+
+            // Get the KnotMover component from the other GameObject
             KnotMover otherKnotMover = other.GetComponent<KnotMover>();
-
-            if (otherKnotMover != null)
+            if (otherKnotMover != null && knotMover !=null)
             {
                 // Access the SplineContainer and spline indices from both objects
                 SplineContainer currentContainer = knotMover.splineContainer;
-
-                // Save the necessary data before destruction
-                SplineKnotIndex knotA = new SplineKnotIndex(knotMover.splineIndex, knotMover.knotIndex);
-                SplineKnotIndex knotB = new SplineKnotIndex(otherKnotMover.splineIndex, otherKnotMover.knotIndex);
-
-                // Only link if the knots are on different splines
-                if (knotA.Spline != knotB.Spline)
+                if (currentContainer!=null)
                 {
-                    splineinfo.SetBeforeJoinBoolFalse();
+                    // Save the necessary data before destruction
+                    SplineKnotIndex knotA = new SplineKnotIndex(knotMover.splineIndex, knotMover.knotIndex);
+                    SplineKnotIndex knotB = new SplineKnotIndex(otherKnotMover.splineIndex, otherKnotMover.knotIndex);
 
-                    //Destroy(other.gameObject);
-                    currentContainer.JoinSplinesOnKnots(knotA, knotB);
-                    Debug.Log("The gameobject being handled is now destroyed");
-                    splineinfo.ReinitializeKnots(this.gameObject);
-                    Destroy(gameObject);
-                    //splineDrawer.splinesetagain();
+                    // Only link if the knots are on different splines
+                    if (knotA.Spline != knotB.Spline)
+                    {
+                        splineinfo?.SetBeforeJoinBoolFalse();
 
-
-
-
-
-
-
+                        currentContainer.JoinSplinesOnKnots(knotA, knotB);
+                        //Debug.Log("The gameobject being handled is now destroyed.");
+                        splineinfo?.ReinitializeKnots(this.gameObject);
+                        Destroy(gameObject);
+                    }
+                    else
+                    {
+                        Debug.Log("Knots belong to the same spline. Not linking.");
+                    }
                 }
                 else
                 {
-                    //Debug.Log("Knots belong to the same spline. Not linking.");
+                    Debug.LogWarning("No KnotMover found on the collided object.");
                 }
             }
-            else
-            {
-                //Debug.LogWarning("No KnotMover found on the collided object.");
-            }
+                
         }
     }
+
+
 
 
 }

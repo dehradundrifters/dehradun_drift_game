@@ -100,6 +100,7 @@ public class splitknot : MonoBehaviour
         // Instantiate the knotpointPrefab at the position of the new knot and assign it to the parent
         GameObject newKnotpoint = Instantiate(knotpointPrefab, transform.position, Quaternion.identity, knotparent.transform);
 
+
         splineInfo.onlyreinitialize();
     }
 }

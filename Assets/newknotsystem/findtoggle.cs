@@ -81,7 +81,7 @@ public class ToggleReference : MonoBehaviour
         }
 
         // Register for the grab and release events
-        grabInteractable.selectEntered.AddListener(OnGrabbed);
+        grabInteractable.hoverEntered.AddListener(OnGrabbed);
         grabInteractable.selectExited.AddListener(OnReleased);
     }
 
@@ -105,7 +105,7 @@ public class ToggleReference : MonoBehaviour
     }
 
     // Called when the object is grabbed
-    private void OnGrabbed(SelectEnterEventArgs args)
+    public void OnGrabbed(HoverEnterEventArgs args)
     {
         // Check if the JoinKnot toggle is on
         if (joinKnotToggle != null && joinKnotToggle.isOn)
@@ -120,7 +120,7 @@ public class ToggleReference : MonoBehaviour
     }
 
     // Called when the object is released
-    private void OnReleased(SelectExitEventArgs args)
+    public void OnReleased(SelectExitEventArgs args)
     {
         // Disable the JoinKnot script when released
         if (joinKnotScript != null)
@@ -143,7 +143,7 @@ public class ToggleReference : MonoBehaviour
     void OnDestroy()
     {
         // Unregister the event listeners
-        grabInteractable.selectEntered.RemoveListener(OnGrabbed);
+        grabInteractable.hoverEntered.RemoveListener(OnGrabbed);
         grabInteractable.selectExited.RemoveListener(OnReleased);
     }
 }

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class RampForceApplier : MonoBehaviour
 {
-    public float additionalForce = 500f; // Adjustable force amount
-    public string rampColliderTag = "Ramp"; // Tag for the ramp trigger collider
+    public float additionalForce = 2000f; // Adjustable force amount
+     // Tag for the ramp trigger collider
 
     private Rigidbody carRigidbody;
 
@@ -23,8 +23,27 @@ public class RampForceApplier : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         // Check if the trigger collider has the specified tag
-        if (other.CompareTag(rampColliderTag) && carRigidbody != null)
+        if (other.CompareTag("ramp2x") && carRigidbody != null)
         {
+            additionalForce = 2000f;
+            // Apply additional force in the car's forward direction
+            Vector3 forceDirection = transform.forward * additionalForce;
+            carRigidbody.AddForce(forceDirection, ForceMode.Impulse);
+
+            Debug.Log("Additional force applied: " + additionalForce);
+        }
+        else if (other.CompareTag("ramp4x") && carRigidbody != null)
+        {
+            additionalForce = 4000f;
+            // Apply additional force in the car's forward direction
+            Vector3 forceDirection = transform.forward * additionalForce;
+            carRigidbody.AddForce(forceDirection, ForceMode.Impulse);
+
+            Debug.Log("Additional force applied: " + additionalForce);
+        }
+        else if (other.CompareTag("ramp6x") && carRigidbody != null)
+        {
+            additionalForce = 6000f;
             // Apply additional force in the car's forward direction
             Vector3 forceDirection = transform.forward * additionalForce;
             carRigidbody.AddForce(forceDirection, ForceMode.Impulse);
