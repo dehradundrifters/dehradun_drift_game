@@ -54,21 +54,28 @@ public class KnotMover : MonoBehaviour
 
         // Get the spline corresponding to our splineIndex
         Spline currentSpline = splineContainer.Splines[splineIndex];
+
         if (beforejoinbool)
         {
             if (splineIndex == splineContainer.Splines.Count - 1 && knotIndex == spline.Count - 1)
             {
                 Vector3 cubeLocalPosition = splineContainer.transform.InverseTransformPoint(cube.transform.position);
+                Quaternion cubeLocalRotation = Quaternion.Inverse(splineContainer.transform.rotation) * cube.transform.rotation;
+
                 transform.position = cube.transform.position;
-                BezierKnot newKnot = new BezierKnot(cubeLocalPosition);
+                transform.rotation = cube.transform.rotation;
+
+                BezierKnot newKnot = new BezierKnot(cubeLocalPosition, float3.zero, float3.zero, cubeLocalRotation);
                 spline[knotIndex] = newKnot;
                 spline.SetTangentMode(knotIndex, TangentMode.AutoSmooth);
             }
             else
             {
                 Vector3 localPosition = splineContainer.transform.InverseTransformPoint(transform.position);
+                Quaternion localRotation = Quaternion.Inverse(splineContainer.transform.rotation) * transform.rotation;
+
                 BezierKnot currentKnot = currentSpline[knotIndex];
-                BezierKnot newKnot = new BezierKnot(localPosition, currentKnot.TangentIn, currentKnot.TangentOut);
+                BezierKnot newKnot = new BezierKnot(localPosition, currentKnot.TangentIn, currentKnot.TangentOut, localRotation);
                 currentSpline[knotIndex] = newKnot;
                 currentSpline.SetTangentMode(knotIndex, TangentMode.AutoSmooth);
             }
@@ -81,6 +88,7 @@ public class KnotMover : MonoBehaviour
             DeleteKnot(); // Delete this GameObject
         }
     }
+
 
     // Method to delete the current knot
     public void DeleteKnot()

@@ -6,10 +6,11 @@ public class SetActiveOnSpline : MonoBehaviour
     public SplineContainer splineContainer; // Assign this in the Inspector
     public GameObject targetGameObject; // The GameObject you want to activate and move
     public float yOffset = 1.0f; // Offset in the Y-axis
+    public float zOffset = 1.0f; // Dynamic offset along the direction of the spline
     public GameObject camerarig;
+
     public void spawnthecar()
     {
-
         if (splineContainer == null || targetGameObject == null)
         {
             Debug.LogError("SplineContainer or Target GameObject is not assigned.");
@@ -24,24 +25,31 @@ public class SetActiveOnSpline : MonoBehaviour
             // Ensure the spline has at least 2 knots (knot 0 and knot 1)
             if (spline.Count > 1)
             {
-                // Get the position of knot 0
-                Vector3 knot0Position = spline[0].Position; // Local position of knot 0
-                Vector3 worldKnot0Position = splineContainer.transform.TransformPoint(knot0Position); // Convert to world position
+                // Get the world position of knot 0
+                Vector3 knot0Position = spline[0].Position;
+                Vector3 worldKnot0Position = splineContainer.transform.TransformPoint(knot0Position);
 
-                // Add the Y-axis offset to knot 0 position
+                // Get the world position of knot 1
+                Vector3 knot1Position = spline[1].Position;
+                Vector3 worldKnot1Position = splineContainer.transform.TransformPoint(knot1Position);
+
+                // Compute the direction vector from knot 0 to knot 1
+                Vector3 forwardDirection = (worldKnot1Position - worldKnot0Position).normalized;
+
+                // Apply the offset in the direction of the second knot
+                worldKnot0Position += forwardDirection * zOffset;
+
+                // Apply Y offset
                 worldKnot0Position.y += yOffset;
 
-                // Get the position of knot 1
-                Vector3 knot1Position = spline[1].Position; // Local position of knot 1
-                Vector3 worldKnot1Position = splineContainer.transform.TransformPoint(knot1Position); // Convert to world position
-
-                // Move the target GameObject to knot 0's world position
+                // Move the target GameObject to knot 0's world position with offsets
                 targetGameObject.transform.position = worldKnot0Position;
 
                 // Make the GameObject look at knot 1's world position
                 targetGameObject.transform.LookAt(worldKnot1Position);
+
+                // Disable the camera rig and activate the car
                 camerarig.SetActive(false);
-                // Set the GameObject active
                 targetGameObject.SetActive(true);
             }
             else
@@ -55,5 +63,3 @@ public class SetActiveOnSpline : MonoBehaviour
         }
     }
 }
-    
-

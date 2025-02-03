@@ -10,7 +10,7 @@ public class SplineDrawer : MonoBehaviour
     public GameObject parentObject; // The parent object to assign to the instantiated objects
     public InputActionReference rightTriggerAction; // Reference for the right trigger button
     public InputActionReference aButtonAction; // Reference for the A button on VR controller
-
+    public bool notworkingOnSpline = false;
     private Spline spline;
     private bool knotIsFollowingCube = true; // To check if the current knot should move with the cube
     private int currentKnotIndex = -1; // Track the index of the current knot
@@ -36,7 +36,7 @@ public class SplineDrawer : MonoBehaviour
             splineContainer.AddSpline(spline);
         }
 
-        // Add the first knot at the GameObject's initial position (the position of this GameObject)
+        // Add the first knot at the GameObject's initial position
         AddNewKnotAtPosition(transform.position);
 
         // Instantiate the object at the position of the first knot
@@ -69,6 +69,9 @@ public class SplineDrawer : MonoBehaviour
             knotIsFollowingCube = false;
             AddNewKnotAtPosition(transform.position);
             InstantiateAtKnotPosition();
+
+            // Set workingOnSpline to false after creating a knot
+            notworkingOnSpline = false;
         }
     }
 
@@ -77,14 +80,14 @@ public class SplineDrawer : MonoBehaviour
         if (!invalid)
         {
             SwitchToNewSpline();
+
+            // Set workingOnSpline to true when switching to a new spline
+            notworkingOnSpline = true;
         }
-        // Switch to a new spline on A button press
-        
     }
 
     void Update()
     {
-        //canCreateKnots = knotcreate.isOn;
         // Move the current knot with the cube while the knot is set to follow the cube
         if (knotIsFollowingCube && currentKnotIndex >= 0)
         {
@@ -156,7 +159,7 @@ public class SplineDrawer : MonoBehaviour
         canCreateKnots = state;
         Debug.Log(" toggle state" + canCreateKnots);
         splinesetagain();
-        if (!state)
+        if (!state && !notworkingOnSpline )
         {
             SwitchToNewSpline();
         }

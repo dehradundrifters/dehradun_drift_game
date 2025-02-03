@@ -11,6 +11,8 @@ TagManager:
   - ramp2x
   - ramp4x
   - ramp6x
+  - LeftHand
+  - RightHand
   layers:
   - Default
   - TransparentFX
